@@ -3,6 +3,7 @@ from pyautogui import *
 from pytesseract import *
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
+from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QCheckBox, QDesktopWidget, QMessageBox
 from PyQt5.QtGui import QFont
 from qt_material import apply_stylesheet
@@ -33,59 +34,79 @@ class windowManager(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(200,200,400,300)
+        self.setGeometry(200,200,485,200)
         self.setWindowTitle("TFT Bot")
+        self.setMinimumSize(460,200)
         #self.setWindowFlags(Qt.FramelessWindowHint)
 
         self.traitLabel = QtWidgets.QLabel(self)
         self.traitLabel.setText("Traits")
         self.traitLabel.setFont(QFont('Helvetica', 12))
         #self.traitLabel.setStyleSheet("text-decoration: underline")
-        self.traitLabel.move(40,20)
+        self.traitLabel.move(30,20)
         
 
         self.buyRedeemed = QCheckBox("Redeemed", self)
-        self.buyRedeemed.move(40,50)
+        self.buyRedeemed.move(30,45)
         self.buyRedeemed.setFont(QFont('Helvetica', 10))
         
         self.buyForgotten = QCheckBox("Forgotten", self)
-        self.buyForgotten.move(40,80)
+        self.buyForgotten.move(30,75)
         self.buyForgotten.setFont(QFont('Helvetica', 10))
 
         self.buyDawnbringer = QCheckBox("Dawnbringer", self)
-        self.buyDawnbringer.move(40,110)
+        self.buyDawnbringer.move(30,105)
         self.buyDawnbringer.setFont(QFont('Helvetica', 10))
         self.buyDawnbringer.resize(320,30)
 
         self.buyHellion = QCheckBox("Hellion", self)
-        self.buyHellion.move(40,140)
+        self.buyHellion.move(30,135)
         self.buyHellion.setFont(QFont('Helvetica', 10))
   
         self.optionsLabel = QtWidgets.QLabel(self)
         self.optionsLabel.setText("Options")
-        self.optionsLabel.move(42,175)
+        self.optionsLabel.move(155,20)
         self.optionsLabel.setFont(QFont('Helvetica', 12))
 
         self.buyOneCosts = QCheckBox("Buy One Costs", self)
-        self.buyOneCosts.move(40,210)
+        self.buyOneCosts.move(155,50)
         self.buyOneCosts.resize(300,20)
         self.buyOneCosts.setFont(QFont('Helvetica', 10))
+        self.buyOneCosts.setToolTip('If checked, the bot will buy all 1-cost units')
 
         self.putUnits = QCheckBox("Place and Sell Units", self)
-        self.putUnits.move(40,240)
+        self.putUnits.move(155,80)
         self.putUnits.resize(300,20)
         self.putUnits.setFont(QFont('Helvetica', 10))
+        self.putUnits.setToolTip('If checked, the bot will randomly place and sell units')
+
+        self.noSurrender = QCheckBox("Don't Surrender", self)
+        self.noSurrender.move(155,110)
+        self.noSurrender.resize(300,20)
+        self.noSurrender.setFont(QFont('Helvetica', 10))
+        self.noSurrender.setToolTip('If checked, the bot will not surrender')
+
+        self.runTime = QCheckBox("Run Indefinitely", self)
+        self.runTime.setChecked(True)
+        self.runTime.move(155,140)
+        self.runTime.resize(300,20)
+        self.runTime.setFont(QFont('Helvetica', 10))
+        self.runTime.setToolTip('If unchecked, the bot will run for a total of 5 games')
 
         self.startButton = QtWidgets.QPushButton(self)
         self.startButton.setText("Start Bot")
-        self.startButton.move(260, 170)
+        self.startButton.move(360, 50)
         self.startButton.clicked.connect(self.begin)
+        self.startButton.resize(110,200)
 
         self.stopButton = QtWidgets.QPushButton(self)
         self.stopButton.setText("Terminate")
-        self.stopButton.move(260, 220)
+        self.stopButton.move(360, 122)
         self.stopButton.clicked.connect(terminateProcess)
         self.stopButton.setProperty('class', 'danger')
+        self.stopButton.resize(110,200)
+
+        
 
 
         """
@@ -231,7 +252,7 @@ def startGame(self):
     placeDelay = 0
     #time.sleep(2)   # Time to open up the screen
     openLeague("League of Legends")
-    time.sleep(1)
+    time.sleep(0.7)
 
     pregame = True  
     if(pyautogui.locateOnScreen('./inGame/In Game.png', confidence=0.60)):
@@ -240,6 +261,9 @@ def startGame(self):
     
     print("Bot Started")
     while keyboard.is_pressed('q') is False:
+
+        if(gamesPlayed >= 5 and self.noSurrender.isChecked() is False):
+            break
 
         if(pregame):    
             playButton = pyautogui.locateOnScreen('./outOfGame/Play.png', confidence=0.85)
@@ -288,15 +312,16 @@ def startGame(self):
 
         else:
 
-            gameEnd = pyautogui.locateOnScreen('./inGame/End Game.png', confidence=0.85)
-            if(gameEnd)!= None:
-                print('Surrendering')
-                complete = quitGame()
-                if (complete):
-                    print('Surrendered')
-                    gamesPlayed += 1
-                    print(gamesPlayed)
-                    pregame = True
+            if(self.noSurrender.isChecked() is False):
+                gameEnd = pyautogui.locateOnScreen('./inGame/End Game.png', confidence=0.85)
+                if(gameEnd)!= None:
+                    print('Surrendering')
+                    complete = quitGame()
+                    if (complete):
+                        print('Surrendered')
+                        gamesPlayed += 1
+                        print(gamesPlayed)
+                        pregame = True
 
             if(self.buyOneCosts.isChecked() is True):
                 oneGold = pyautogui.locateOnScreen('./inGame/One Gold.png', confidence=0.80)
@@ -346,6 +371,11 @@ def startGame(self):
                 pyautogui.moveTo(levelUnit[0]+r,levelUnit[1] + r, duration=float(random.randrange(5,30)/100))
                 click(levelUnit[0]+ r, levelUnit[1] + r)
 
+            continueWidget = pyautogui.locateOnScreen('./inGame/Enemies Surrendered.png', confidence=0.85)
+            if(continueWidget) != None:
+                r = randomize(40)
+                pyautogui.moveTo(continueWidget[0]+r,continueWidget[1] + r, duration=float(random.randrange(5,30)/100))
+                click(continueWidget[0]+ r, continueWidget[1] + r)
 
             ###Items and Orbs###
 
@@ -382,12 +412,14 @@ def startGame(self):
                 click(chooseOne[0]+r, chooseOne[1]+r)
 
             ### Champion Placement ###
-            if(placeDelay >= 16 and self.putUnits.isChecked() is True):
+            if(placeDelay >= 15 and self.putUnits.isChecked() is True):
                 placeDelay = 0
                 c = random.randint(0,5)
-                if(c==0):
-                    pyautogui.moveTo(856, 614, float(random.randrange(20, 60))/100)
+
+                if(c==0 or c==1):
+                    pyautogui.moveTo(953, 629, float(random.randrange(20, 60))/100)
                     pydirectinput.press('e')
+
                 elif(c==1 or c==2):
                     pyautogui.moveTo(976, 637, float(random.randrange(20, 60))/100)
                     pydirectinput.press('e')
@@ -399,6 +431,7 @@ def startGame(self):
                 elif(c==3 or c==4):
                     pyautogui.moveTo(584, 640, float(random.randrange(20, 60))/100)
                     pydirectinput.press('e')
+                    
                 elif(c==4 or c==5):
                     pyautogui.moveTo(random.randrange(471, 917), 754, float(random.randrange(20, 60))/100)
                     pydirectinput.press('e')
@@ -412,6 +445,7 @@ def startGame(self):
             #X:  471 Y:  754 RGB: (160, 149, 132)
             #if(pyautogui.pixel(471, 754)[0] != 160):
             #    dragCursor(471, 754)
+    print("Finished " + str(gamesPlayed), "Games and Stopped")
 
 
 
