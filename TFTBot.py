@@ -2,9 +2,7 @@ import threading
 from pyautogui import *
 from pytesseract import *
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
-from PyQt5 import QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow, QCheckBox, QDesktopWidget, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QCheckBox, QDesktopWidget, QMessageBox, QStatusBar
 from PyQt5.QtGui import QFont
 from qt_material import apply_stylesheet
 import pyautogui
@@ -36,15 +34,16 @@ class windowManager(QMainWindow):
     def initUI(self):
         self.setGeometry(200,200,485,200)
         self.setWindowTitle("TFT Bot")
-        self.setMinimumSize(460,200)
+        self.setMinimumSize(480,200)
         #self.setWindowFlags(Qt.FramelessWindowHint)
+
+        self.statusBar = QStatusBar()
+        self.setStatusBar(self.statusBar)
 
         self.traitLabel = QtWidgets.QLabel(self)
         self.traitLabel.setText("Traits")
         self.traitLabel.setFont(QFont('Helvetica', 12))
-        #self.traitLabel.setStyleSheet("text-decoration: underline")
         self.traitLabel.move(30,20)
-        
 
         self.buyRedeemed = QCheckBox("Redeemed", self)
         self.buyRedeemed.move(30,45)
@@ -63,6 +62,7 @@ class windowManager(QMainWindow):
         self.buyHellion.move(30,135)
         self.buyHellion.setFont(QFont('Helvetica', 10))
   
+
         self.optionsLabel = QtWidgets.QLabel(self)
         self.optionsLabel.setText("Options")
         self.optionsLabel.move(155,20)
@@ -93,11 +93,13 @@ class windowManager(QMainWindow):
         self.runTime.setFont(QFont('Helvetica', 10))
         self.runTime.setToolTip('If unchecked, the bot will run for a total of 5 games')
 
+
         self.startButton = QtWidgets.QPushButton(self)
         self.startButton.setText("Start Bot")
         self.startButton.move(360, 50)
         self.startButton.clicked.connect(self.begin)
         self.startButton.resize(110,200)
+        self.startButton.setFont(QFont('Helvetica', 8))
 
         self.stopButton = QtWidgets.QPushButton(self)
         self.stopButton.setText("Terminate")
@@ -105,69 +107,23 @@ class windowManager(QMainWindow):
         self.stopButton.clicked.connect(terminateProcess)
         self.stopButton.setProperty('class', 'danger')
         self.stopButton.resize(110,200)
-
+        self.stopButton.setFont(QFont('Helvetica', 8))
         
-
-
-        """
-        tk.Tk.__init__(self, *args, **kwargs)
-
-        #tk.Tk.wm_iconbitmap(self, 'TFT_Icon.ico')
-        tk.Tk.wm_title(self, "TFT Battlepass Bot")
-        
-
-        self.startButton = tk.Button(self, text="Activate Bot", bg="#488cfa", command=self.begin)
-        self.startButton.place(x=255, y=45)
-
-        self.stopButton = tk.Button(self, text="Terminate Process", bg="#ff3b3b", command=terminateProcess)
-        self.stopButton.place(x=240, y=125)
-
-        self.buyRedeemed = tk.BooleanVar(self)
-        self.buyForgotten = tk.BooleanVar(self)
-        self.buyDawnbringer = tk.BooleanVar(self)
-        self.buyOneCosts = tk.BooleanVar(self)
-        self.putUnits = tk.BooleanVar(self)
-        self.traitsLabel = tk.Label(self)
-        self.additionalLabel = tk.Label(self)
-
-        self.traits = tk.Label(self, text="Traits", font=('Arial',9,'underline'))
-        self.traits.place(x=15, y=5)
-
-
-        self.enableRedeemed = tk.Checkbutton(self, text="Redeemed",variable=self.buyRedeemed, onvalue = 1, offvalue = 0,)# command=switchState(self.buyRedeemed))
-        self.enableRedeemed.place(x=15, y=25)
-
-        self.enableForgotten = tk.Checkbutton(self, text="Forgotten",variable=self.buyForgotten, onvalue = 1, offvalue = 0,)# command=switchState(self.buyForgotten))
-        self.enableForgotten.place(x=15, y=45)
-
-        self.enableDawnbringer = tk.Checkbutton(self, text="Dawnbringer",variable=self.buyDawnbringer, onvalue = 1, offvalue = 0,)# command=switchState(self.buyDawnbringer))
-        self.enableDawnbringer.place(x=15, y=65)
-
-        self.options = tk.Label(self, text="Options", font=('Arial',9,'underline'))
-        self.options.place(x=15, y=95)
-
-        self.enableOneCosts = tk.Checkbutton(self, text="Buy One Costs",variable=self.buyOneCosts, onvalue = 1, offvalue = 0,)# command=switchState(self.buyOneCosts))
-        self.enableOneCosts.place(x=15, y=115)
-
-        self.placeUnits = tk.Checkbutton(self, text="Place & Sell Units", variable=self.putUnits, onvalue = 1, offvalue = 0,) #command=switchState(self.putUnits))
-        self.placeUnits.place(x=15, y=135)
-        """
         print("Screen", pyautogui.size())
         
     def func(self):
         '''long-running work'''
         self.startButton.setText('Starting...')
         time.sleep(2)
+        self.startButton.setStyleSheet('color : #3fda0b; border-color : #3fda0b')
         self.startButton.setText('Running')
         checkAndStart(self)
         time.sleep(0.2)
+        self.startButton.setStyleSheet('color: #448af; border-color : #448af')
         self.startButton.setText('Start Bot')
-        #self.startButton.setText(state=tk.NORMAL)
 
     def begin(self):
         '''start a thread and connect it to func'''
-
-        #self.startButton.config(state=tk.DISABLED)
         threading.Thread(target=self.func, daemon=True).start()
 
 def click(x,y):
@@ -236,7 +192,6 @@ def checkAndStart(self):
         startGame(self)
     else:
         QMessageBox.about(self,"Game not Running", "Open League of Legends to begin")  
-
 
 
 def greeting():
@@ -442,38 +397,20 @@ def startGame(self):
 
                 
             placeDelay += 1
-            #X:  471 Y:  754 RGB: (160, 149, 132)
-            #if(pyautogui.pixel(471, 754)[0] != 160):
-            #    dragCursor(471, 754)
+
     print("Finished " + str(gamesPlayed), "Games and Stopped")
-
-
-
-
 
 
 if __name__ == "__main__":
 
-    #img = pyautogui.screenshot(region=(875, 848, 35, 26))
-    #img.save(r"screenshot.png")
-    #output = pytesseract.image_to_string("screenshot.png", config="--psm 10")
-    #print(int(output[0]) == 9)
-    
-    #win = windowManager()
-    #win.geometry('360x200')
-    #win.eval('tk::PlaceWindow . center')
-
-    
     app = QApplication(sys.argv)
     window = windowManager()
     
     extra = {
         # Button colors
         'danger': '#dc3545',
-        'warning': '#ffc107',
-        'success': '#17a2b8',
         # Font
-        'font-family': 'Roboto',
+        'font-family': 'Helvetica',
     }
     apply_stylesheet(app, theme='dark_blue.xml', extra=extra)
 
