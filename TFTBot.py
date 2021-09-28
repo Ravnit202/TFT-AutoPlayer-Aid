@@ -207,33 +207,30 @@ def startGame(self):
     placeDelay = 0
     #time.sleep(2)   # Time to open up the screen
     openLeague("League of Legends")
-    time.sleep(0.7)
+    time.sleep(0.5)
 
     pregame = True  
     if(pyautogui.locateOnScreen('./inGame/In Game.png', confidence=0.60)):
         pregame = False
     
-    
     print("Bot Started")
     while keyboard.is_pressed('q') is False:
 
-        if(gamesPlayed >= 5 and self.noSurrender.isChecked() is False):
-            break
-
         if(pregame):    
-            playButton = pyautogui.locateOnScreen('./outOfGame/Play.png', confidence=0.85)
+
+            playButton = pyautogui.locateOnScreen('./outOfGame/Play.png', confidence=0.80)
             if (playButton)!= None:
                 click(playButton[0]+randomize(55), playButton[1]+randomize(20))
 
-            TFTButton = pyautogui.locateOnScreen('./outOfGame/TFT.png', confidence=0.85)
+            TFTButton = pyautogui.locateOnScreen('./outOfGame/TFT.png', confidence=0.80)
             if (TFTButton)!= None:
                 click(TFTButton[0]+randomize(25), TFTButton[1]+randomize(20))
 
-            confirmButton = pyautogui.locateOnScreen('./outOfGame/Confirm.png', confidence=0.85)
+            confirmButton = pyautogui.locateOnScreen('./outOfGame/Confirm.png', confidence=0.80)
             if (confirmButton)!= None:
                 click(confirmButton[0]+randomize(25), confirmButton[1]+randomize(20))
 
-            findMatchButton = pyautogui.locateOnScreen('./outOfGame/Find Match.png', confidence=0.85)
+            findMatchButton = pyautogui.locateOnScreen('./outOfGame/Find Match.png', confidence=0.80)
             if (findMatchButton)!= None:
                 click(findMatchButton[0]+randomize(55), findMatchButton[1]+randomize(20))
 
@@ -277,6 +274,8 @@ def startGame(self):
                         gamesPlayed += 1
                         print(gamesPlayed)
                         pregame = True
+                        if(self.runTime.isChecked() is False and (gamesPlayed >= 5)):
+                            break
 
             if(self.buyOneCosts.isChecked() is True):
                 oneGold = pyautogui.locateOnScreen('./inGame/One Gold.png', confidence=0.80)
