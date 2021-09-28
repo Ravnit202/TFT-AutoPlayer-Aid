@@ -16,16 +16,8 @@ import sys
 
 pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
-
-# Play Button    X:  441 Y:  201 RGB: ( 26,  42,  51)
-# TFT Symbol     X: 1068 Y:  393 RGB: (112, 101,  71)
-# TFT RANKED     X: 1004 Y:  714 RGB: (225, 216, 197)
-# Confirm Button X:  857 Y:  851 RGB: ( 25,  44,  55)
-# Find Match     X:  859 Y:  836 RGB: ( 27,  40,  49)
-# Accept Match   X:  879 Y:  647 RGB: ( 16,  17,  28)
-
 class windowManager(QMainWindow):
-    
+
     def __init__(self):
 
         super(windowManager, self).__init__()
@@ -48,7 +40,7 @@ class windowManager(QMainWindow):
         self.buyRedeemed = QCheckBox("Redeemed", self)
         self.buyRedeemed.move(30,45)
         self.buyRedeemed.setFont(QFont('Helvetica', 10))
-        
+
         self.buyForgotten = QCheckBox("Forgotten", self)
         self.buyForgotten.move(30,75)
         self.buyForgotten.setFont(QFont('Helvetica', 10))
@@ -61,7 +53,7 @@ class windowManager(QMainWindow):
         self.buyHellion = QCheckBox("Hellion", self)
         self.buyHellion.move(30,135)
         self.buyHellion.setFont(QFont('Helvetica', 10))
-  
+
 
         self.optionsLabel = QtWidgets.QLabel(self)
         self.optionsLabel.setText("Options")
@@ -108,9 +100,10 @@ class windowManager(QMainWindow):
         self.stopButton.setProperty('class', 'danger')
         self.stopButton.resize(110,200)
         self.stopButton.setFont(QFont('Helvetica', 8))
-        
-        print("Screen", pyautogui.size())
-        
+
+        self.screenRes = pyautogui.size()
+        print("Screen", self.screenRes)
+
     def func(self):
         '''long-running work'''
         self.startButton.setText('Starting...')
@@ -119,7 +112,7 @@ class windowManager(QMainWindow):
         self.startButton.setText('Running')
         checkAndStart(self)
         time.sleep(0.2)
-        self.startButton.setStyleSheet('color: #448af; border-color : #448af')
+        self.startButton.setStyleSheet('color: #448aff; border-color : #448aff')
         self.startButton.setText('Start Bot')
 
     def begin(self):
@@ -138,20 +131,14 @@ def rightClick(x,y):
     time.sleep(float(random.randrange(20, 40))/100)
     win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, 0, 0)
 
-def dragCursor(x, y):
-    win32api.SetCursorPos((x,y))
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-    pyautogui.moveTo(x+random.randrange(100,200),y-random.randrange(70, 150), duration=float(random.randrange(5,20)/100))
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
-
 def terminateProcess():
     sys.exit()
 
 def checkIfGameOpen():
     for proc in psutil.process_iter():
-        try:   
+        try:
             if "LeagueClientUxRender.exe".lower() in proc.name().lower():
-                return True 
+                return True
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
     return False
@@ -191,7 +178,7 @@ def checkAndStart(self):
     if(openOrNot):
         startGame(self)
     else:
-        QMessageBox.about(self,"Game not Running", "Open League of Legends to begin")  
+        QMessageBox.about(self,"Game not Running", "Open League of Legends to begin")
 
 
 def greeting():
@@ -209,63 +196,69 @@ def startGame(self):
     openLeague("League of Legends")
     time.sleep(0.5)
 
-    pregame = True  
-    if(pyautogui.locateOnScreen('./inGame/In Game.png', confidence=0.60)):
+    pregame = True
+    if(pyautogui.locateOnScreen('./inGame/In Game.png',grayscale=True, confidence=0.60)):
         pregame = False
-    
+
     print("Bot Started")
     while keyboard.is_pressed('q') is False:
 
-        if(pregame):    
+        if(pregame):
 
-            playButton = pyautogui.locateOnScreen('./outOfGame/Play.png', confidence=0.80)
+            playButton = pyautogui.locateOnScreen('./outOfGame/Play.png', grayscale=True, confidence=0.70)
             if (playButton)!= None:
                 click(playButton[0]+randomize(55), playButton[1]+randomize(20))
 
-            TFTButton = pyautogui.locateOnScreen('./outOfGame/TFT.png', confidence=0.80)
+            partyButton = pyautogui.locateOnScreen('./outOfGame/Party.png', confidence=0.75)
+            if (partyButton)!= None:
+                click(partyButton[0]+randomize(25) , partyButton[1]+randomize(20))
+
+            TFTButton = pyautogui.locateOnScreen('./outOfGame/TFT.png', grayscale=True, confidence=0.75)
             if (TFTButton)!= None:
                 click(TFTButton[0]+randomize(25), TFTButton[1]+randomize(20))
 
-            confirmButton = pyautogui.locateOnScreen('./outOfGame/Confirm.png', confidence=0.80)
+            confirmButton = pyautogui.locateOnScreen('./outOfGame/Confirm.png', grayscale=True, confidence=0.75)
             if (confirmButton)!= None:
                 click(confirmButton[0]+randomize(25), confirmButton[1]+randomize(20))
 
-            findMatchButton = pyautogui.locateOnScreen('./outOfGame/Find Match.png', confidence=0.80)
+            findMatchButton = pyautogui.locateOnScreen('./outOfGame/Find Match.png', grayscale=True, confidence=0.75)
             if (findMatchButton)!= None:
                 click(findMatchButton[0]+randomize(55), findMatchButton[1]+randomize(20))
 
-            chatOpen = pyautogui.locateOnScreen('./outOfGame/Chat Open.png', confidence=0.75)
+            chatOpen = pyautogui.locateOnScreen('./outOfGame/Chat Open.png', grayscale=True, confidence=0.75)
             if (chatOpen)!= None:
                 click(chatOpen[0]+5, chatOpen[1]+5)
 
-            acceptMatch = pyautogui.locateOnScreen('./outOfGame/Accept Match.png', confidence=0.85)
+            acceptMatch = pyautogui.locateOnScreen('./outOfGame/Accept Match.png', grayscale=True, confidence=0.75)
             if (acceptMatch)!= None:
                 click(acceptMatch[0]+randomize(55), acceptMatch[1]+randomize(35))
                 time.sleep(0.5)
 
-            okButton = pyautogui.locateOnScreen('./outOfGame/Ok Button.png', confidence=0.85)
+            okButton = pyautogui.locateOnScreen('./outOfGame/Ok Button.png', grayscale=True, confidence=0.86)
             if (okButton)!= None:
                 click(okButton[0]+randomize(45),okButton[1]+randomize(20))
 
-            playAgain = pyautogui.locateOnScreen('./outOfGame/Play Again.png', confidence=0.80)
+            playAgain = pyautogui.locateOnScreen('./outOfGame/Play Again.png', grayscale=True, confidence=0.75)
             if (playAgain) != None:
-                click(playAgain[0]+randomize(25) , playAgain[1]+randomize(20))        
+                click(playAgain[0]+randomize(25) , playAgain[1]+randomize(20))
 
-            gameStart = pyautogui.locateOnScreen('./inGame/Game Start.png', confidence=0.80)
+
+
+            gameStart = pyautogui.locateOnScreen('./inGame/Game Start.png', grayscale=True, confidence=0.75)
             if (gameStart)!= None:
                 greeting()
                 print("greeted players")
                 pregame = False
 
 
-                
+
         ###Champion Detection###
 
 
         else:
 
             if(self.noSurrender.isChecked() is False):
-                gameEnd = pyautogui.locateOnScreen('./inGame/End Game.png', confidence=0.85)
+                gameEnd = pyautogui.locateOnScreen('./inGame/End Game.png', confidence=0.8)
                 if(gameEnd)!= None:
                     print('Surrendering')
                     complete = quitGame()
@@ -285,12 +278,12 @@ def startGame(self):
                     a = output[0].isdigit()
                     print(output[0], output[0].isdigit())
                     try:
-                        if((a is False) or int(output[0]) !=0): 
+                        if((a is False) or int(output[0]) !=0):
                             pyautogui.moveTo(oneGold[0]-30, oneGold[1]-30, duration=float(random.randrange(5,20)/100))
                             click(oneGold[0]-30, oneGold[1]-30)
                     except:
                         pass
-            
+
             if(self.buyRedeemed.isChecked() is True):
                 redeemed = pyautogui.locateOnScreen('./champions/Redeemed.png', confidence=0.80)
                 if(redeemed) != None:
@@ -306,7 +299,7 @@ def startGame(self):
                     click(forgotten[0]+ r, forgotten[1] + r)
 
             if(self.buyDawnbringer.isChecked() is True):
-                dawnbringer = pyautogui.locateOnScreen('./champions/Dawnbringer.png', confidence=0.85)
+                dawnbringer = pyautogui.locateOnScreen('./champions/Dawnbringer.png', confidence=0.80)
                 if(dawnbringer) != None:
                     r = randomize(40)
                     pyautogui.moveTo(dawnbringer[0]+r,dawnbringer[1] + r, duration=float(random.randrange(5,30)/100))
@@ -319,13 +312,13 @@ def startGame(self):
                     pyautogui.moveTo(hellion[0]+r, hellion[1] + r, duration=float(random.randrange(5,40)/100))
                     click(hellion[0]+ r, hellion[1] + r)
 
-            levelUnit = pyautogui.locateOnScreen('./inGame/Two Star.png', confidence=0.85)
+            levelUnit = pyautogui.locateOnScreen('./inGame/Two Star.png', confidence=0.80)
             if(levelUnit) != None:
                 r = randomize(80)
                 pyautogui.moveTo(levelUnit[0]+r,levelUnit[1] + r, duration=float(random.randrange(5,30)/100))
                 click(levelUnit[0]+ r, levelUnit[1] + r)
 
-            continueWidget = pyautogui.locateOnScreen('./inGame/Enemies Surrendered.png', confidence=0.85)
+            continueWidget = pyautogui.locateOnScreen('./inGame/Enemies Surrendered.png', confidence=0.80)
             if(continueWidget) != None:
                 r = randomize(40)
                 pyautogui.moveTo(continueWidget[0]+r,continueWidget[1] + r, duration=float(random.randrange(5,30)/100))
@@ -354,11 +347,11 @@ def startGame(self):
                 #pyautogui.moveTo(apWand[0]+5, apWand[1]+5, duration=float(random.randrange(5,20)/100))
                 click(apWand[0]+r, apWand[1]+r)
                 rightClick(apWand[0]+r, apWand[1]+r)
-            
+
             chooseOne = pyautogui.locateOnScreen('./inGame/ChooseOne.png', confidence=.70)
             if(chooseOne)!= None:
                 r = random.randrange(-100,100)
-                if r >= 0:
+                if r > 0:
                     r=100
                 else:
                     r=-100
@@ -385,26 +378,29 @@ def startGame(self):
                 elif(c==3 or c==4):
                     pyautogui.moveTo(584, 640, float(random.randrange(20, 60))/100)
                     pydirectinput.press('e')
-                    
+
                 elif(c==4 or c==5):
                     pyautogui.moveTo(random.randrange(471, 917), 754, float(random.randrange(20, 60))/100)
                     pydirectinput.press('e')
-                
+
 
                 pyautogui.moveTo(random.randrange(471, 917), 754, float(random.randrange(10, 30))/100)
                 pydirectinput.press('w')
 
-                
-            placeDelay += 1
 
+            placeDelay += 1
+            #X:  471 Y:  754 RGB: (160, 149, 132)
+            #if(pyautogui.pixel(471, 754)[0] != 160):
+            #    dragCursor(471, 754)
     print("Finished " + str(gamesPlayed), "Games and Stopped")
+
 
 
 if __name__ == "__main__":
 
     app = QApplication(sys.argv)
     window = windowManager()
-    
+
     extra = {
         # Button colors
         'danger': '#dc3545',
@@ -419,6 +415,5 @@ if __name__ == "__main__":
     window.move(qtRectangle.topLeft())
     qtRectangle = window.frameGeometry()
 
-    window.show()  
+    window.show()
     app.exec_()
-
