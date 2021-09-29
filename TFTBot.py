@@ -165,7 +165,7 @@ def quitGame():
     firstSurrender = pyautogui.locateOnScreen('./inGame/Surrender.png', confidence=0.80)
     if(firstSurrender) != None:
         click(firstSurrender[0]+12, firstSurrender[1]+5)
-        time.sleep(0.5)
+        time.sleep(0.8)
         finalSurrender = pyautogui.locateOnScreen('./inGame/Surrender Confirm.png', confidence=0.80)
         if(finalSurrender) != None:
             click(finalSurrender[0]+11, finalSurrender[1]+4)
@@ -194,7 +194,7 @@ def startGame(self):
     placeDelay = 0
     #time.sleep(2)   # Time to open up the screen
     openLeague("League of Legends")
-    time.sleep(0.5)
+    time.sleep(1)
 
     pregame = True
     if(pyautogui.locateOnScreen('./inGame/In Game.png',grayscale=True, confidence=0.60)):
@@ -258,7 +258,7 @@ def startGame(self):
         else:
 
             if(self.noSurrender.isChecked() is False):
-                gameEnd = pyautogui.locateOnScreen('./inGame/End Game.png', confidence=0.8)
+                gameEnd = pyautogui.locateOnScreen('./inGame/End Game.png', confidence=0.86)
                 if(gameEnd)!= None:
                     print('Surrendering')
                     complete = quitGame()
@@ -271,7 +271,7 @@ def startGame(self):
                             break
 
             if(self.buyOneCosts.isChecked() is True):
-                oneGold = pyautogui.locateOnScreen('./inGame/One Gold.png', confidence=0.80)
+                oneGold = pyautogui.locateOnScreen('./inGame/One Gold.png', confidence=0.85)
                 if(oneGold) != None:
                     img = pyautogui.screenshot(region=(875, 848, 35, 26))
                     output = pytesseract.image_to_string(img, config="--psm 13")
@@ -285,34 +285,38 @@ def startGame(self):
                         pass
 
             if(self.buyRedeemed.isChecked() is True):
-                redeemed = pyautogui.locateOnScreen('./champions/Redeemed.png', confidence=0.80)
+                redeemed = pyautogui.locateOnScreen('./champions/Redeemed.png', confidence=0.85)
                 if(redeemed) != None:
                     r = randomize(40)
                     pyautogui.moveTo(redeemed[0]+r, redeemed[1] + r, duration=float(random.randrange(5,30)/100))
                     click(redeemed[0]+ r, redeemed[1] + r)
+                    time.sleep(0.1)
 
             if(self.buyForgotten.isChecked() is True):
-                forgotten = pyautogui.locateOnScreen('./champions/Forgotten.png', confidence=0.80)
+                forgotten = pyautogui.locateOnScreen('./champions/Forgotten.png', confidence=0.85)
                 if(forgotten) != None:
                     r = randomize(40)
                     pyautogui.moveTo(forgotten[0]+r,forgotten[1] + r, duration=float(random.randrange(5,30)/100))
                     click(forgotten[0]+ r, forgotten[1] + r)
+                    time.sleep(0.1)
 
             if(self.buyDawnbringer.isChecked() is True):
-                dawnbringer = pyautogui.locateOnScreen('./champions/Dawnbringer.png', confidence=0.80)
+                dawnbringer = pyautogui.locateOnScreen('./champions/Dawnbringer.png', confidence=0.85)
                 if(dawnbringer) != None:
                     r = randomize(40)
                     pyautogui.moveTo(dawnbringer[0]+r,dawnbringer[1] + r, duration=float(random.randrange(5,30)/100))
                     click(dawnbringer[0]+ r, dawnbringer[1] + r)
+                    time.sleep(0.1)
 
             if(self.buyHellion.isChecked() is True):
-                hellion = pyautogui.locateOnScreen('./champions/Hellion.png', confidence=0.80)
+                hellion = pyautogui.locateOnScreen('./champions/Hellion.png', confidence=0.85)
                 if(hellion) != None:
                     r = randomize(40)
                     pyautogui.moveTo(hellion[0]+r, hellion[1] + r, duration=float(random.randrange(5,40)/100))
                     click(hellion[0]+ r, hellion[1] + r)
+                    time.sleep(0.1)
 
-            levelUnit = pyautogui.locateOnScreen('./inGame/Two Star.png', confidence=0.80)
+            levelUnit = pyautogui.locateOnScreen('./inGame/Two Star.png', confidence=0.85)
             if(levelUnit) != None:
                 r = randomize(80)
                 pyautogui.moveTo(levelUnit[0]+r,levelUnit[1] + r, duration=float(random.randrange(5,30)/100))
@@ -350,12 +354,12 @@ def startGame(self):
 
             chooseOne = pyautogui.locateOnScreen('./inGame/ChooseOne.png', confidence=.70)
             if(chooseOne)!= None:
-                r = random.randrange(-100,100)
+                r = random.randrange(-120,100)
                 if r > 0:
                     r=100
                 else:
                     r=-100
-                pyautogui.moveTo(chooseOne[0]+r, chooseOne[1]+50, float(random.randrange(10,40)/100))
+                pyautogui.moveTo(chooseOne[0]+r, chooseOne[1]+r, float(random.randrange(10,40)/100))
                 click(chooseOne[0]+r, chooseOne[1]+r)
 
             ### Champion Placement ###
@@ -392,7 +396,7 @@ def startGame(self):
             #X:  471 Y:  754 RGB: (160, 149, 132)
             #if(pyautogui.pixel(471, 754)[0] != 160):
             #    dragCursor(471, 754)
-    print("Finished " + str(gamesPlayed), "Games and Stopped")
+    print("Finished " + str(gamesPlayed), "Game(s) and Stopped")
 
 
 
